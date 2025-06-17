@@ -36,14 +36,14 @@ class GemmOp(BasicOp):
             self.torch_dtype = torch.float32
             self.out_dtype = torch.float32
             # use float32 gemm
-            torch.backends.cuda.matmul.allow_tf32 = False
+            torch.backends.xpu.matmul.allow_tf32 = False
             torch.backends.cudnn.allow_tf32 = False
         # fp32(tf32) * fp32(tf32) --> fp32
         elif self.dtype == "tfloat32":
             self.torch_dtype = torch.float32
             self.out_dtype = torch.float32
             # use tfloat32 gemm
-            torch.backends.cuda.matmul.allow_tf32 = True
+            torch.backends.xpu.matmul.allow_tf32 = True
             torch.backends.cudnn.allow_tf32 = True
         # int8 (+scale) * int8 (+scale) --> bf16
         elif self.dtype == "int8":

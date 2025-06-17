@@ -25,10 +25,10 @@ class GPUGemmOp(GemmOp):
         super().__init__(args_dict, backend, *args, **kwargs)
 
         if self.dtype == "float32":
-            torch.backends.cuda.matmul.allow_tf32 = False
+            torch.backends.xpu.matmul.allow_tf32 = False
             torch.backends.cudnn.allow_tf32 = False
         elif self.dtype == "tfloat32":
-            torch.backends.cuda.matmul.allow_tf32 = True
+            torch.backends.xpu.matmul.allow_tf32 = True
             torch.backends.cudnn.allow_tf32 = True
 
 
@@ -142,7 +142,7 @@ class GPUGroupGemmFP8Op(GroupGemmFP8Op):
                 self.quant_group_size, 
                 self.backend.get_torch_device_name()
             )
-            m_indices = torch.arange(0, self.num_groups, device='cuda', dtype=torch.int)
+            m_indices = torch.arange(0, self.num_groups, device='xpu', dtype=torch.int)
             m_indices = m_indices.unsqueeze(-1).expand(self.num_groups, self.M).contiguous().view(-1)
             deep_gemm.m_grouped_gemm_fp8_fp8_bf16_nt_contiguous(x_fp8, y_fp8, out, m_indices)
 
@@ -152,7 +152,7 @@ class GPUGroupGemmFP8Op(GroupGemmFP8Op):
                 self.quant_group_size, 
                 self.backend.get_torch_device_name()
             )
-            masked_m = torch.ones((self.num_groups, ), device='cuda', dtype=torch.int) * self.M
+            masked_m = torch.ones((self.num_groups, ), device='xpu', dtype=torch.int) * self.M
             deep_gemm.m_grouped_gemm_fp8_fp8_bf16_nt_masked(x_fp8, y_fp8, out, masked_m, self.M)
 
         if self.mode == "contiguous":
