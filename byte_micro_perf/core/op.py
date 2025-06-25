@@ -78,7 +78,7 @@ class BasicOp:
         first_tensor_mapping = {}
         if create_inputs:
             for key, value in self.input_tensor_info.items():
-                first_tensor_mapping[key] = torch.zeros(
+                first_tensor_mapping[key] = torch.randn(
                     size=value.shape,
                     dtype=value.dtype,
                     device=value.device
@@ -87,7 +87,7 @@ class BasicOp:
                     first_tensor_mapping[key] = first_tensor_mapping[key].pin_memory()
         if create_outputs:
             for key, value in self.output_tensor_info.items():
-                first_tensor_mapping[key] = torch.zeros(
+                first_tensor_mapping[key] = torch.randn(
                     size=value.shape,
                     dtype=value.dtype,
                     device=value.device
